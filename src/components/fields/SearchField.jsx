@@ -8,7 +8,7 @@ import "./styles.css"
 
 function SearchField() {
     return (
-        <Row justify="space-between" align="middle" className="full-width">
+        <Row justify="space-between" align="middle" className="full-width secret-search-row">
             <Col align={"center"} flex={1}>
                 <Input placeholder="All Secrets" className="full-width"/>
             </Col>

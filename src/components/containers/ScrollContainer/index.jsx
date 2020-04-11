@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { List, Avatar, Spin } from "antd";
+import { List } from "antd";
 import InfiniteScroll from "react-infinite-scroller";
+
+import "./styles.less";
 
 
 function ScrollContainer(props) {
+    const { data, renderItem } = props;
     return (
         <div className="infinite-container">
             <InfiniteScroll
@@ -14,12 +17,9 @@ function ScrollContainer(props) {
                 useWindow={false}
             >
                 <List
-                    dataSource={props.data}
-                    renderItem={props.renderItem}
+                    dataSource={data}
+                    renderItem={renderItem}
                 >
-                    <div className="loading-container">
-                        <Spin />
-                    </div>
                 </List>
             </InfiniteScroll>
         </div>

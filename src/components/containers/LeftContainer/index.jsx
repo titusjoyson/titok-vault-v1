@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
+import { List } from "antd";
+
 import styles from "./styles.js";
 import "./styles.css";
-import { defaultTheme } from '../../../theme/const';
+import { defaultTheme } from "../../../theme/const";
 
 const { Sider } = Layout;
 const theme = defaultTheme;
 
 function LeftContainer(props) {
     const [collapsed, setCollapsed] = useState(0);
-    const {Header, Body} = props;
-
+    const [selected, setSelected] = useState(null);
+    const { Header, ScrollContainer, data } = props;
+    const listClass = "scroll-list-item"
+    const listSelectedClass = listClass + " scroll-list-item-active"
     return (
         <Sider
             breakpoint="md"
@@ -27,16 +31,26 @@ function LeftContainer(props) {
             onCollapse={(collapsed, type) => {
                 // console.log(collapsed, type);
             }}
-            style={styles.slider}
-            className="left-constainer-wrapper"
+            className="left-constrainer-wrapper"
         >
-            <div
-                className="site-layout-background"
-                style={styles.header}
-            >
-                <Header/>
+            <div style={styles.header}>
+                <Header />
             </div>
-            <Body/>
+            <ScrollContainer
+                data={data}
+                renderItem={(item, idx) => (
+                    <List.Item
+                        className={
+                            (idx === selected
+                                ? listSelectedClass
+                                : listClass)
+                        }
+                        onClick={() => setSelected(idx)}
+                    >
+                        {item}
+                    </List.Item>
+                )}
+            />
         </Sider>
     );
 }
