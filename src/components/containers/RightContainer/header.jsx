@@ -2,7 +2,7 @@ import React from "react";
 import { Layout } from "antd";
 import { Button, Tooltip } from "antd";
 import { Row, Col } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 
 import "./styles.less";
 
@@ -22,6 +22,13 @@ function ContainerHeader() {
                             type="gost"
                             shape="circle"
                             icon={<EditOutlined />}
+                        />
+                    </Tooltip>
+                    <Tooltip title="Save Secret" className="right-container-header-button">
+                        <Button
+                            type="gost"
+                            shape="circle"
+                            icon={<SaveOutlined />}
                         />
                     </Tooltip>
                     <Tooltip title="Delete Secret" className="right-container-header-button">
