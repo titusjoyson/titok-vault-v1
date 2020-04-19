@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
-import { Form, Row, Col, Button, Affix } from "antd";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { Form, Button, Affix } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
 import Header from "./header";
-import SecretInput from "../../Form/SecretInput";
-import FormItem from "../../Form/Item";
+import FormItem from "../../DataForm/FormItem";
+import TextInput from "../../DataForm/Input";
+import DropableView from "../../dnd/Dropable";
 
 import "./styles.less";
 
@@ -76,56 +76,6 @@ const rawData = [
     },
 ];
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
-
-const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightblue" : "white",
-});
-
-function DropableView() {
-    const [data, setData] = useState(rawData);
-
-    function onDragEnd(result) {
-        // dropped outside the list
-        if (!result.destination) {
-            return;
-        }
-
-        const items = reorder(
-            data,
-            result.source.index,
-            result.destination.index
-        );
-
-        setData(items);
-    }
-
-    return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-                {(provided, snapshot) => (
-                    <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}
-                    >
-                        {data.map((d, idx) => (
-                            <SecretInput data={d} itemIndex={idx} key={idx} />
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>
-    );
-}
-
 function _renderContext(mode, form) {
     switch (mode) {
         case "edit":
@@ -139,7 +89,7 @@ function _renderContext(mode, form) {
                         onFinish={() => {}}
                         autoComplete="off"
                     >
-                        <FormItem
+                        <TextInput
                             name={null}
                             label={null}
                             placeholder="Title"
@@ -147,7 +97,7 @@ function _renderContext(mode, form) {
                             className="form-item-underline-item"
                             value=""
                         />
-                        <DropableView />
+                        <DropableView rawData={rawData} DraggableItem={FormItem} />
                         <Affix
                             style={{ textAlign: "right", right: 32 }}
                             offsetBottom={44}

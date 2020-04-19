@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input } from "antd";
 
-function FormItem(props) {
+function TextInput(props) {
     let {
         title,
         label,
@@ -36,4 +36,4 @@ function FormItem(props) {
     );
 }
 
-export default FormItem;
+export default TextInput;

@@ -31,7 +31,7 @@ function LeftContainer(props) {
             onCollapse={(collapsed, type) => {
                 // console.log(collapsed, type);
             }}
-            className="left-constrainer-wrapper"
+            className="left-constrainer-wrapper border-1"
         >
             <div style={styles.header}>
                 <Header />
