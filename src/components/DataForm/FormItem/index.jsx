@@ -5,7 +5,7 @@ import { Row, Col } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import TextInput from "../Input";
-import DraggableWrapper from "../../dnd/Draggable";
+import DraggableWrapper from "../../DND/Draggable";
 
 import "../styles.less";
 import "./styles.less";

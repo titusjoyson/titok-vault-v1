@@ -1,20 +1,27 @@
 import React, { useState } from "react";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import { Layout } from "antd";
 import { List } from "antd";
+import SearchField from "../../Input/SearchField";
+import ScrollContainer from "../ScrollContainer";
 
 import styles from "./styles.js";
 import "./styles.css";
 import { defaultTheme } from "../../../theme/const";
+import { addSecret, selectSecret } from '../../../redux/actions/secrets';
 
 const { Sider } = Layout;
 const theme = defaultTheme;
 
 function LeftContainer(props) {
     const [collapsed, setCollapsed] = useState(0);
-    const [selected, setSelected] = useState(null);
-    const { Header, ScrollContainer, data } = props;
-    const listClass = "scroll-list-item"
-    const listSelectedClass = listClass + " scroll-list-item-active"
+    const { secretList, selectedSecret, actions } = props;
+
+    const listClass = "scroll-list-item";
+    const listSelectedClass = listClass + " scroll-list-item-active";
+    
     return (
         <Sider
             breakpoint="md"
@@ -34,20 +41,20 @@ function LeftContainer(props) {
             className="left-constrainer-wrapper border-1"
         >
             <div style={styles.header}>
-                <Header />
+                <SearchField 
+                    onButtonClick={()=>actions.addSecret()}
+                />
             </div>
             <ScrollContainer
-                data={data}
-                renderItem={(item, idx) => (
+                data={secretList || []}
+                renderItem={(item) => (
                     <List.Item
                         className={
-                            (idx === selected
-                                ? listSelectedClass
-                                : listClass)
+                            item.id === selectedSecret ? listSelectedClass : listClass
                         }
-                        onClick={() => setSelected(idx)}
+                        onClick={() => actions.selectSecret(item.id)}
                     >
-                        {item}
+                        {item.title || "New Secret..."}
                     </List.Item>
                 )}
             />
@@ -55,4 +62,16 @@ function LeftContainer(props) {
     );
 }
 
-export default LeftContainer;
+const mapStateToProps = (state) => ({
+    secretList: state.secrets.data,
+    selectedSecret: state.secrets.active,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators({
+        addSecret,
+        selectSecret
+    }, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LeftContainer);

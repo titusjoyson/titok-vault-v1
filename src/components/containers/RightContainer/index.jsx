@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Layout } from "antd";
 import { Form, Button, Affix } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
@@ -6,7 +7,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import Header from "./header";
 import FormItem from "../../DataForm/FormItem";
 import TextInput from "../../DataForm/Input";
-import DropableView from "../../dnd/Dropable";
+import DropableView from "../../DND/Dropable";
 
 import "./styles.less";
 
@@ -121,9 +122,9 @@ function _renderContext(mode, form) {
     }
 }
 
-function RightContainer() {
+function RightContainer(props) {
+    const [ viewMode, setViewMode ] = useState("view")
     const [form] = Form.useForm();
-    const mode = "edit";
 
     return (
         <Layout className="site-layout">
@@ -137,7 +138,7 @@ function RightContainer() {
                     minHeight: 280,
                 }}
             >
-                {_renderContext(mode, form)}
+                {_renderContext(viewMode, form)}
             </Content>
         </Layout>
     );

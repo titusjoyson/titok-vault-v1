@@ -20,7 +20,10 @@
     "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
     "react-infinite-scroller": "^1.2.4",
-    "react-scripts": "3.4.1"
+    "react-redux": "^7.2.0",
+    "react-scripts": "3.4.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "cross-env BROWSER=none react-app-rewired start",

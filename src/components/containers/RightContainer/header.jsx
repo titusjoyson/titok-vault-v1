@@ -1,15 +1,47 @@
 import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import { Layout } from "antd";
-import { Button, Tooltip } from "antd";
 import { Row, Col } from "antd";
-import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import RoundIconButtons from "../../Buttons/roundIconButtons";
+import { deleteSecret, changeViewMode } from "../../../redux/actions/secrets";
+import { ViewModes } from "../../../com/const";
 
 import "./styles.less";
 
 const { Header } = Layout;
 
+function ContainerHeader(props) {
+    const { activeMode, selectedSecret, actions } = props;
+    
+    function _getActionButton() {
+        switch (activeMode) {
+            case ViewModes.VIEW:
+                return (
+                    <RoundIconButtons
+                        title="Edit Secret"
+                        iconName="edit"
+                        onClick={() => {
+                            actions.changeViewMode(ViewModes.EDIT)
+                        }}
+                    />
+                );
+            case ViewModes.EDIT:
+                return (
+                    <RoundIconButtons
+                        title="Save Secret"
+                        iconName="save"
+                        onClick={() => {
+                            actions.changeViewMode(ViewModes.VIEW)
+                        }}
+                    />
+                );
+            default:
+                return null;
+        }
+    }
 
-function ContainerHeader() {
     return (
         <Header
             theme="lite"
@@ -17,31 +49,33 @@ function ContainerHeader() {
         >
             <Row justify="end" align="middle">
                 <Col align="center">
-                    <Tooltip title="Edit Secret" className="right-container-header-button">
-                        <Button
-                            type="gost"
-                            shape="circle"
-                            icon={<EditOutlined />}
-                        />
-                    </Tooltip>
-                    <Tooltip title="Save Secret" className="right-container-header-button">
-                        <Button
-                            type="gost"
-                            shape="circle"
-                            icon={<SaveOutlined />}
-                        />
-                    </Tooltip>
-                    <Tooltip title="Delete Secret" className="right-container-header-button">
-                        <Button
-                            type="gost"
-                            shape="circle"
-                            icon={<DeleteOutlined />}
-                        />
-                    </Tooltip>
+                    {_getActionButton()}
+                    <RoundIconButtons
+                        title="Delete Secret"
+                        iconName="delete"
+                        onClick={() => {
+                            actions.deleteSecret(selectedSecret);
+                        }}
+                    />
                 </Col>
             </Row>
         </Header>
     );
 }
 
-export default ContainerHeader;
+const mapStateToProps = (state) => ({
+    selectedSecret: state.secrets.active,
+    activeMode: state.secrets.activeMode,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators(
+        {
+            deleteSecret,
+            changeViewMode,
+        },
+        dispatch
+    ),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContainerHeader);

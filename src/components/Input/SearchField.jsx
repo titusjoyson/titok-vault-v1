@@ -6,7 +6,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import "./styles.css"
 
 
-function SearchField() {
+function SearchField(props) {
+    const { onButtonClick } = props;
     return (
         <Row justify="space-between" align="middle" className="full-width secret-search-row border-1">
             <Col align={"center"} flex={1}>
@@ -18,6 +19,7 @@ function SearchField() {
                         type="gost"
                         shape="circle"
                         icon={<PlusOutlined />}
+                        onClick={()=>onButtonClick()}
                     />
                 </Tooltip>
             </Col>
