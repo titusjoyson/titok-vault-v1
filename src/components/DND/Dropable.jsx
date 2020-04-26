@@ -1,37 +1,12 @@
 import React, { useState } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-};
-
 const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "lightgray" : "white"
+    background: isDraggingOver ? "lightgray" : "white",
 });
 
-
 function DropableView(props) {
-    const { rawData, DraggableItem } = props;
-    const [data, setData] = useState(rawData);
-
-    function onDragEnd(result) {
-        // dropped outside the list
-        if (!result.destination) {
-            return;
-        }
-
-        const items = reorder(
-            data,
-            result.source.index,
-            result.destination.index
-        );
-
-        setData(items);
-    }
+    const { data, onDragEnd, renderChild } = props;
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -42,9 +17,7 @@ function DropableView(props) {
                         ref={provided.innerRef}
                         style={getListStyle(snapshot.isDraggingOver)}
                     >
-                        {data.map((d, idx) => (
-                            <DraggableItem data={d} itemIndex={idx} key={idx} />
-                        ))}
+                        {data.map((d, idx) => renderChild(d, idx))}
                         {provided.placeholder}
                     </div>
                 )}

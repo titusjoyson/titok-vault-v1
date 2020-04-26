@@ -3,16 +3,16 @@ import { Form, Input } from "antd";
 
 function TextInput(props) {
     let {
-        title,
-        label,
         name,
+        label,
         placeholder,
         addonAfter,
         type,
         className,
         inputClassName,
-        value
     } = props;
+    const { initialValue, onChange } = props;
+
     var FormInput = Input;
     if (type === "password") {
         FormInput = Input.Password;
@@ -23,14 +23,14 @@ function TextInput(props) {
         className = "form-item"
     }
     return (
-        <Form.Item name={title} label={label} className={className}>
+        <Form.Item name={name} label={label} className={className}>
             <FormInput
                 placeholder={placeholder}
                 addonAfter={addonAfter}
                 className={inputClassName}
                 autoComplete="off"
-                value={value}
-                name={name}
+                initialValue={initialValue}
+                onChange={(e)=>onChange(e.target.value)}
             />
         </Form.Item>
     );
