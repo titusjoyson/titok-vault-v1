@@ -15,9 +15,9 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 });
 
 function DraggableWrapper(props) {
-    const { data, itemIndex, Component } = props;
+    const { draggableId, itemIndex } = props;
     return (
-        <Draggable key={data.id} draggableId={data.id} index={itemIndex}>
+        <Draggable key={draggableId} draggableId={draggableId} index={itemIndex}>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}
@@ -28,7 +28,6 @@ function DraggableWrapper(props) {
                         provided.draggableProps.style
                     )}
                 >
-                    <Component data={data} itemIndex={itemIndex}/>
                     {props.children}
                 </div>
             )}

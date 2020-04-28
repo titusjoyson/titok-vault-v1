@@ -3,6 +3,7 @@ import {
     SELECT_SECRET,
     DELETE_SECRET,
     CHANGE_VIEW_MODE,
+    REPLACE_SECRET,
 } from "../actions/secrets";
 import { Secret } from "../../models";
 import { ViewModes } from "../../com/const";
@@ -64,6 +65,13 @@ export default (state = initialState, action) => {
                 ...state,
                 activeMode: action.payload,
             };
+        case REPLACE_SECRET:
+            data = [...state.data];
+            const replaceItemIdx = data.findIndex(
+                (i) => i.id === action.payload.id
+            );
+            data[replaceItemIdx] = action.payload
+            return {...state, "data":data}
         default:
             return state;
     }

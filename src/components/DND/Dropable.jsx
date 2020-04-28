@@ -6,7 +6,7 @@ const getListStyle = (isDraggingOver) => ({
 });
 
 function DropableView(props) {
-    const { data, onDragEnd, renderChild } = props;
+    const { onDragEnd } = props;
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -16,8 +16,8 @@ function DropableView(props) {
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                         style={getListStyle(snapshot.isDraggingOver)}
-                    >
-                        {data.map((d, idx) => renderChild(d, idx))}
+                    >   
+                        {props.children}
                         {provided.placeholder}
                     </div>
                 )}

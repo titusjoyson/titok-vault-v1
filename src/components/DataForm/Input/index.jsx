@@ -11,7 +11,7 @@ function TextInput(props) {
         className,
         inputClassName,
     } = props;
-    const { initialValue, onChange } = props;
+    const { defaultValue, onBlur } = props;
 
     var FormInput = Input;
     if (type === "password") {
@@ -25,12 +25,13 @@ function TextInput(props) {
     return (
         <Form.Item name={name} label={label} className={className}>
             <FormInput
+                name={`name-${name}`}
                 placeholder={placeholder}
                 addonAfter={addonAfter}
                 className={inputClassName}
-                autoComplete="off"
-                initialValue={initialValue}
-                onChange={(e)=>onChange(e.target.value)}
+                autoComplete={"new-password"}
+                defaultValue={defaultValue}
+                onBlur={()=>onBlur()}
             />
         </Form.Item>
     );

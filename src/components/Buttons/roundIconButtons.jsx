@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Tooltip } from "antd";
-import { DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SaveOutlined, EyeOutlined } from "@ant-design/icons";
 
 function getIcon(iconName){
     switch(iconName){
@@ -9,7 +9,7 @@ function getIcon(iconName){
         case "edit":
             return <EditOutlined/>
         case "save":
-            return <SaveOutlined/>
+            return <EyeOutlined/>
         default:
             return null
     }

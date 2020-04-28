@@ -2,6 +2,7 @@ export const ADD_SECRET = "ADD_SECRET";
 export const SELECT_SECRET = "SELECT_SECRET";
 export const DELETE_SECRET = "DELETE_SECRET";
 export const CHANGE_VIEW_MODE = "CHANGE_VIEW_MODE";
+export const REPLACE_SECRET = "REPLACE_SECRET";
 
 
 export function addSecret(){
@@ -29,5 +30,12 @@ export function changeViewMode(viewMode){
     return {
         type: CHANGE_VIEW_MODE,
         payload: viewMode
+    }
+}
+
+export function replaceSecret(data){
+    return {
+        type: REPLACE_SECRET,
+        payload: data
     }
 }

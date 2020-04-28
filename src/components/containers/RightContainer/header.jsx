@@ -30,7 +30,7 @@ function ContainerHeader(props) {
             case ViewModes.EDIT:
                 return (
                     <RoundIconButtons
-                        title="Save Secret"
+                        title="View Secret"
                         iconName="save"
                         onClick={() => {
                             actions.changeViewMode(ViewModes.VIEW)

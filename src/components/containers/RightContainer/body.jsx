@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect, useRef } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -9,54 +9,15 @@ import FormItem from "../../DataForm/FormItem";
 import TextInput from "../../DataForm/Input";
 import DropableView from "../../DND/Dropable";
 
-import { deleteSecret, changeViewMode } from "../../../redux/actions/secrets";
+import {
+    deleteSecret,
+    changeViewMode,
+    replaceSecret,
+} from "../../../redux/actions/secrets";
 import { ViewModes } from "../../../com/const";
 import Secret, { SecretItem } from "../../../models/secret";
 
 import "./styles.less";
-
-const useCompare = (val) => {
-    const prevVal = usePrevious(val);
-    return prevVal !== val;
-};
-
-const usePrevious = (value) => {
-    const ref = useRef();
-    useEffect(() => {
-        ref.current = value;
-    });
-    return ref.current;
-};
-
-function reducer(state, action) {
-    let newItems = [];
-    switch (action.type) {
-        case "new":
-            return { ...state, ...action.payload };
-        case "addItem":
-            return { ...state, items: [...state.items, SecretItem()] };
-        case "removeItem":
-            newItems = [...state.items];
-            const deleteItemIdx = newItems.findIndex(
-                (i) => i.id === action.payload
-            );
-            newItems.splice(deleteItemIdx, 1);
-            return { ...state, items: newItems };
-        case "updateTitle":
-            return { ...state, title: action.payload };
-        case "updateItems":
-            newItems = [...state.items];
-            const updateItemIdx = newItems.findIndex(
-                (i) => i.id === action.payload
-            );
-            newItems[updateItemIdx] = action.payload;
-            return { ...state, items: newItems };
-        case "replaceItems":
-            return { ...state, items: action.payload };
-        default:
-            throw new Error();
-    }
-}
 
 const formItemLayout = {
     labelCol: {
@@ -69,33 +30,46 @@ const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
-
     return result;
 };
 
-function RightContainerInner(props) {
-    const { activeMode, selectedData } = props;
-    const [form] = Form.useForm();
-    const [state, dispatch] = useReducer(reducer, Secret(""));
+class RightContainerInner extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            ...props.selectedData,
+        };
+    }
+    formRef = React.createRef();
 
-    const hasIdChanged = useCompare(selectedData.id);
-
-    useEffect(() => {
-        if (hasIdChanged) {
-            let newData = { ...selectedData };
-            if (newData.items.length <= 0) {
-                newData.items = [SecretItem()];
+    static getDerivedStateFromProps(props, state) {
+        console.log("main: getDerivedStateFromProps");
+        if (props.selectedData) {
+            if (state.id !== props.selectedData.id) {
+                let newData = { ...props.selectedData };
+                if (newData.items.length <= 0) {
+                    newData.items = [SecretItem()];
+                }
+                // replace current state
+                return {
+                    ...newData,
+                };
             }
-            dispatch({ type: "new", payload: newData });
         }
-    });
-
-    if (!state.id) {
+        console.log("main: getDerivedStateFromProps:end");
+        // Return null if the state hasn't changed
         return null;
     }
 
-    function onDragEnd(result) {
-        const data = state.items;
+    preserveState = () => {
+        const previousData = this.getValues();
+        if (previousData) {
+            this.props.actions.replaceSecret(previousData);
+        }
+    };
+
+    onDragEnd = (result) => {
+        const data = this.state.items;
         // dropped outside the list
         if (!result.destination) {
             return;
@@ -105,70 +79,108 @@ function RightContainerInner(props) {
             result.source.index,
             result.destination.index
         );
-        dispatch({ type: "replaceItems", payload: items });
-    }
+        this.setState({ items: items });
+    };
 
-    return (
-        <React.Fragment>
-            <Form
-                {...formItemLayout}
-                form={form}
-                layout="vertical"
-                name="title-form"
-                onFinish={() => {}}
-                autoComplete="off"
-            >
-                <TextInput
-                    name="title"
-                    inputClassName="form-item-underline"
-                    className="form-item-underline-item"
-                    placeholder="Title"
-                    initialValue={selectedData.title}
-                    onChange={() => {}}
-                    // onChange={(value) =>
-                    //     dispatch({ type: "updateTitle", payload: value })
-                    // }
-                />
-                <DropableView
-                    data={state.items || []}
-                    onDragEnd={onDragEnd}
-                    renderChild={(d, idx) => {
-                        return (
+    getValues = () => {
+        let data = { ...this.state };
+        const form = this.formRef.current;
+        if (data.id) {
+            data.title = form.getFieldValue(`${data.id}-title`);
+            for (let i = 0; i < data.items.length; i++) {
+                let item = data.items[i];
+                item.label = form.getFieldValue(`${item.id}-label`);
+                item.value = form.getFieldValue(`${item.id}-secret`);
+                let type = form.getFieldValue(`${item.id}-type`);
+                if (!type) {
+                    item.type = "password";
+                }
+                data.items[i] = item;
+            }
+            return data;
+        }
+    };
+
+    deleteItem = (id) => {
+        let newItems = [...this.state.items];
+        const deleteItemIdx = newItems.findIndex((i) => i.id === id);
+        newItems.splice(deleteItemIdx, 1);
+        this.setState({ items: newItems }, () => {
+            this.preserveState();
+        });
+    };
+
+    addItem = () => {
+        let newItems = [...this.state.items, SecretItem()];
+        this.setState({ items: newItems }, () => {
+            this.preserveState();
+        });
+    };
+
+    onChange = () => {
+        window.setTimeout(() => this.preserveState(), 100);
+    };
+
+    render() {
+        const { activeMode, actions } = this.props;
+        if (!this.state.id) {
+            return null;
+        }
+        console.log("main:rendering");
+        return (
+            <React.Fragment>
+                <Form
+                    {...formItemLayout}
+                    ref={this.formRef}
+                    layout="vertical"
+                    name="cr"
+                    onFinish={() => {}}
+                >
+                    <TextInput
+                        name={`${this.state.id}-title`}
+                        inputClassName="form-item-underline"
+                        className="form-item-underline-item"
+                        placeholder="Title"
+                        initialValue={this.state.title}
+                        onBlur={() => this.onChange()}
+                    />
+                    <DropableView
+                        onDragEnd={(results) => this.onDragEnd(results)}
+                    >
+                        {this.state.items.map((d, idx) => (
                             <FormItem
+                                key={`form-item-${d.id}`}
                                 data={d}
                                 itemIndex={idx}
-                                key={d.id}
-                                onDelete={(id) =>
-                                    dispatch({
-                                        type: "removeItem",
-                                        payload: id,
-                                    })
-                                }
-                                onChange={(data) =>
-                                    dispatch({
-                                        type: "updateItems",
-                                        payload: data,
-                                    })
-                                }
+                                onDelete={(id) => this.deleteItem(id)}
+                                onBlur={() => this.onChange()}
                             />
-                        );
-                    }}
-                />
-            </Form>
-            <Affix style={{ textAlign: "right", right: 32 }} offsetBottom={44}>
-                <Button
-                    className="right-container-add-icon"
-                    type="primary"
-                    htmlType="button"
-                    shape="circle"
-                    icon={<PlusOutlined />}
-                    size={"large"}
-                    onClick={() => dispatch({ type: "addItem" })}
-                ></Button>
-            </Affix>
-        </React.Fragment>
-    );
+                        ))}
+                    </DropableView>
+                </Form>
+                <Affix
+                    style={{ textAlign: "right", right: 32 }}
+                    offsetBottom={44}
+                >
+                    <Button
+                        className="right-container-add-icon"
+                        type="primary"
+                        htmlType="button"
+                        shape="circle"
+                        icon={<PlusOutlined />}
+                        size={"large"}
+                        onClick={() => this.addItem()}
+                    ></Button>
+                </Affix>
+            </React.Fragment>
+        );
+    }
 }
+
+RightContainerInner.defaultProps = {
+    id: null,
+    items: [],
+};
 
 const mapStateToProps = (state) => {
     const secretList = state.secrets.data;
@@ -194,6 +206,7 @@ const mapDispatchToProps = (dispatch) => ({
         {
             deleteSecret,
             changeViewMode,
+            replaceSecret,
         },
         dispatch
     ),
