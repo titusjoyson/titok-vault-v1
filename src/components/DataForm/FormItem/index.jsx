@@ -6,6 +6,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 
 import TextInput from "../Input";
 import SelectInput from "../Input/select";
+import SwitchInput from '../Input/switch';
 
 import DraggableWrapper from "../../DND/Draggable";
 import { InputTypes } from "../../../com/const";
@@ -35,6 +36,7 @@ function FormItem(props) {
                     </Col>
                     <Col className="input-item-card-middle-col">
                         <TextInput
+                            size={"small"}
                             name={`${data.id}-label`}
                             placeholder="Label:"
                             className="form-item-label-input-item"
@@ -45,6 +47,7 @@ function FormItem(props) {
                         <Row justify={"start"} align={"middle"}>
                             <Col flex={1}>
                                 <TextInput
+                                    size={"middle"}
                                     name={`${data.id}-secret`}
                                     placeholder="Enter your secret"
                                     type={valueType}
@@ -54,9 +57,8 @@ function FormItem(props) {
                                     onBlur={() => onBlur()}
                                 />
                             </Col>
-                            <SelectInput
+                            <SwitchInput
                                 name={`${data.id}-type`}
-                                options={options}
                                 defaultValue={data.type}
                                 onChange={(value) => {
                                     setValueType(value);

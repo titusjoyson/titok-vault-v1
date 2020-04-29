@@ -23,7 +23,11 @@ function TextInput(props) {
         className = "form-item"
     }
     return (
-        <Form.Item name={name} label={label} className={className}>
+        <Form.Item 
+            name={name} 
+            label={label} 
+            className={className}
+        >
             <FormInput
                 name={`name-${name}`}
                 placeholder={placeholder}
@@ -32,6 +36,7 @@ function TextInput(props) {
                 autoComplete={"new-password"}
                 defaultValue={defaultValue}
                 onBlur={()=>onBlur()}
+                size={props.size || "middle"}
             />
         </Form.Item>
     );
