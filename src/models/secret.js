@@ -5,7 +5,7 @@ export const SecretItem = () => ({
     id: uuid.v4(),
     label: null,
     value: null,
-    type: InputTypes.PASSWORD,    
+    type: InputTypes.TEXT,    
 })
 
 const Secret = (id=null) => ({

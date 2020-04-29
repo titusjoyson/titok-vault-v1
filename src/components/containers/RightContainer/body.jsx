@@ -45,6 +45,10 @@ class RightContainerInner extends React.Component {
     static getDerivedStateFromProps(props, state) {
         console.log("main: getDerivedStateFromProps");
         if (props.selectedData) {
+            if (!props.selectedData.id){
+                // clean right container state
+                return Secret("")
+            }
             if (state.id !== props.selectedData.id) {
                 let newData = { ...props.selectedData };
                 if (newData.items.length <= 0) {
@@ -121,12 +125,31 @@ class RightContainerInner extends React.Component {
         window.setTimeout(() => this.preserveState(), 100);
     };
 
+    _renderAddButton = (readOnly) => {
+        if (readOnly){
+            return null
+        }
+        return (
+            <Affix style={{ textAlign: "right", right: 32 }} offsetBottom={44}>
+                <Button
+                    className="right-container-add-icon"
+                    type="primary"
+                    htmlType="button"
+                    shape="circle"
+                    icon={<PlusOutlined />}
+                    size={"large"}
+                    onClick={() => this.addItem()}
+                ></Button>
+            </Affix>
+        );
+    };
+
     render() {
         const { activeMode, actions } = this.props;
         if (!this.state.id) {
             return null;
         }
-        console.log("main:rendering");
+        const readOnly = activeMode === ViewModes.VIEW;
         return (
             <React.Fragment>
                 <Form
@@ -137,6 +160,7 @@ class RightContainerInner extends React.Component {
                     onFinish={() => {}}
                 >
                     <TextInput
+                        readOnly={readOnly}
                         name={`${this.state.id}-title`}
                         inputClassName="form-item-underline"
                         className="form-item-underline-item"
@@ -149,6 +173,7 @@ class RightContainerInner extends React.Component {
                     >
                         {this.state.items.map((d, idx) => (
                             <FormItem
+                                readOnly={readOnly}
                                 key={`form-item-${d.id}`}
                                 data={d}
                                 itemIndex={idx}
@@ -158,20 +183,7 @@ class RightContainerInner extends React.Component {
                         ))}
                     </DropableView>
                 </Form>
-                <Affix
-                    style={{ textAlign: "right", right: 32 }}
-                    offsetBottom={44}
-                >
-                    <Button
-                        className="right-container-add-icon"
-                        type="primary"
-                        htmlType="button"
-                        shape="circle"
-                        icon={<PlusOutlined />}
-                        size={"large"}
-                        onClick={() => this.addItem()}
-                    ></Button>
-                </Affix>
+                {this._renderAddButton(readOnly)}
             </React.Fragment>
         );
     }

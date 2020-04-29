@@ -10,6 +10,7 @@ function TextInput(props) {
         type,
         className,
         inputClassName,
+        readOnly
     } = props;
     const { defaultValue, onBlur } = props;
 
@@ -37,6 +38,7 @@ function TextInput(props) {
                 defaultValue={defaultValue}
                 onBlur={()=>onBlur()}
                 size={props.size || "middle"}
+                readOnly={readOnly}
             />
         </Form.Item>
     );

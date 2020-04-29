@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { Button } from "antd";
 import { Card, Typography } from "antd";
 import { Row, Col } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, CopyOutlined } from "@ant-design/icons";
 
 import TextInput from "../Input";
-import SelectInput from "../Input/select";
-import SwitchInput from '../Input/switch';
+import SwitchInput from "../Input/switch";
 
 import DraggableWrapper from "../../DND/Draggable";
 import { InputTypes } from "../../../com/const";
@@ -14,13 +13,17 @@ import { InputTypes } from "../../../com/const";
 import "../styles.less";
 import "./styles.less";
 
-const options = [
-    { id: 1, value: InputTypes.PASSWORD, text: "Protected" },
-    { id: 2, value: InputTypes.TEXT, text: "Text" },
-];
+function copyToClipboard(str) {
+    const el = document.createElement("textarea");
+    el.value = str;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+}
 
 function FormItem(props) {
-    const { data, itemIndex, onDelete, onBlur } = props;
+    const { data, itemIndex, onDelete, onBlur, readOnly } = props;
     const rowNumber = itemIndex + 1;
 
     const [valueType, setValueType] = useState(data.type);
@@ -36,6 +39,7 @@ function FormItem(props) {
                     </Col>
                     <Col className="input-item-card-middle-col">
                         <TextInput
+                            readOnly={readOnly}
                             size={"small"}
                             name={`${data.id}-label`}
                             placeholder="Label:"
@@ -47,6 +51,7 @@ function FormItem(props) {
                         <Row justify={"start"} align={"middle"}>
                             <Col flex={1}>
                                 <TextInput
+                                    readOnly={readOnly}
                                     size={"middle"}
                                     name={`${data.id}-secret`}
                                     placeholder="Enter your secret"
@@ -57,27 +62,46 @@ function FormItem(props) {
                                     onBlur={() => onBlur()}
                                 />
                             </Col>
-                            <SwitchInput
-                                name={`${data.id}-type`}
-                                defaultValue={data.type}
-                                onChange={(value) => {
-                                    setValueType(value);
-                                    onBlur();
-                                }}
-                            />
+                            {!readOnly ? (
+                                <SwitchInput
+                                    name={`${data.id}-type`}
+                                    defaultValue={data.type}
+                                    onChange={(value) => {
+                                        setValueType(
+                                            value
+                                                ? InputTypes.PASSWORD
+                                                : InputTypes.TEXT
+                                        );
+                                        onBlur();
+                                    }}
+                                />
+                            ) : null}
                         </Row>
                     </Col>
                     <Col align="center" className="input-item-card-right-col">
-                        <Button
-                            type="link"
-                            shape="circle"
-                            icon={
-                                <DeleteOutlined
-                                    style={{ color: "rgba(0,0,0,.65)" }}
-                                />
-                            }
-                            onClick={() => onDelete(data.id)}
-                        />
+                        {!readOnly ? (
+                            <Button
+                                type="link"
+                                shape="circle"
+                                icon={
+                                    <DeleteOutlined
+                                        style={{ color: "rgba(0,0,0,.65)" }}
+                                    />
+                                }
+                                onClick={() => onDelete(data.id)}
+                            />
+                        ) : (
+                            <Button
+                                //type="link"
+                                shape="circle"
+                                icon={
+                                    <CopyOutlined
+                                        style={{ color: "rgba(0,0,0,.65)" }}
+                                    />
+                                }
+                                onClick={() => copyToClipboard(data.value)}
+                            />
+                        )}
                     </Col>
                 </Row>
             </Card>
