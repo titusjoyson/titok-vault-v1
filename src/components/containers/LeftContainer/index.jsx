@@ -22,18 +22,28 @@ class LeftContainer extends React.Component {
         super(props);
         this.state = {
             collapsed: false,
-            items: props.secretList,
-            selectedSecret: props.selectedSecret,
+            items: null,
         };
     }
     searchValue = "";
 
-    static getDerivedStateFromProps(props, state) {
-        return {
-            items: props.secretList,
-            selectedSecret: props.selectedSecret,
+    doSearch = (items, value) => {
+        let query = value.toLowerCase();
+        let newItemsQuery = "new secret".indexOf(query);
+        if (newItemsQuery >= 0 && query) {
+            return items.filter((item) => !item.title);
+        } else if(query) {
+            return items.filter((item) => {
+                if (item.title) {
+                    return item.title.toLowerCase().indexOf(query) >= 0;
+                }else{
+                    return null;
+                }
+            });
+        }else{
+            return null
         }
-    }
+    };
 
     typingTimeout = null;
     onSearch = (value) => {
@@ -41,17 +51,22 @@ class LeftContainer extends React.Component {
 
         // Make a new timeout set to go off in 1000ms (1 second)
         this.typingTimeout = setTimeout(() => {
-            let result = binarySearch(this.props.secretList, value);
+            let result = this.doSearch(this.props.secretList, value);
             this.setState({ items: result });
-        }, 300);
+        }, 500);
     };
 
     render() {
         const listClass = "scroll-list-item";
         const listSelectedClass = listClass + " scroll-list-item-active";
 
-        const { items, collapsed, selectedSecret } = this.state;
-        const { actions } = this.props;
+        const { items, collapsed } = this.state;
+        const { secretList, selectedSecret, actions } = this.props;
+
+        let results = secretList;
+        if (items) {
+            results = items;
+        }
 
         return (
             <Sider
@@ -78,7 +93,7 @@ class LeftContainer extends React.Component {
                     />
                 </div>
                 <ScrollContainer
-                    data={items}
+                    data={results}
                     renderItem={(item) => (
                         <List.Item
                             className={

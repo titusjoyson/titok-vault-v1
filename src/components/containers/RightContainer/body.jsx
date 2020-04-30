@@ -14,7 +14,7 @@ import {
     changeViewMode,
     replaceSecret,
 } from "../../../redux/actions/secrets";
-import { ViewModes } from "../../../com/const";
+import { ViewModes, InputTypes } from "../../../com/const";
 import Secret, { SecretItem } from "../../../models/secret";
 
 import "./styles.less";
@@ -95,7 +95,9 @@ class RightContainerInner extends React.Component {
                 item.value = form.getFieldValue(`${item.id}-secret`);
                 let type = form.getFieldValue(`${item.id}-type`);
                 if (!type) {
-                    item.type = "password";
+                    item.type = InputTypes.PASSWORD;
+                }else{
+                    item.type = InputTypes.TEXT;
                 }
                 data.items[i] = item;
             }
@@ -120,7 +122,11 @@ class RightContainerInner extends React.Component {
     };
 
     onChange = () => {
-        window.setTimeout(() => this.preserveState(), 100);
+        const { activeMode } = this.props;
+        const readOnly = activeMode === ViewModes.VIEW;
+        if (!readOnly) {
+            window.setTimeout(() => this.preserveState(), 100);
+        }
     };
 
     _renderAddButton = (readOnly) => {
@@ -143,11 +149,13 @@ class RightContainerInner extends React.Component {
     };
 
     render() {
-        const { activeMode, actions } = this.props;
+        const { activeMode } = this.props;
+        const { id, title, items } = this.state;
         if (!this.state.id) {
             return null;
         }
         const readOnly = activeMode === ViewModes.VIEW;
+        let titleIC = "form-item-underline"
         return (
             <React.Fragment>
                 <Form
@@ -159,23 +167,23 @@ class RightContainerInner extends React.Component {
                 >
                     <TextInput
                         readOnly={readOnly}
-                        name={`${this.state.id}-title`}
-                        inputClassName="form-item-underline"
+                        name={`${id}-title`}
+                        inputClassName={titleIC}
                         className="form-item-underline-item"
                         placeholder="Title"
-                        initialValue={this.state.title}
+                        defaultValue={title}
                         onBlur={() => this.onChange()}
                     />
                     <DropableView
                         onDragEnd={(results) => this.onDragEnd(results)}
                     >
-                        {this.state.items.map((d, idx) => (
+                        {items.map((d, idx) => (
                             <FormItem
                                 readOnly={readOnly}
                                 key={`form-item-${d.id}`}
                                 data={d}
                                 itemIndex={idx}
-                                onDelete={(id) => this.deleteItem(id)}
+                                onDelete={(did) => this.deleteItem(did)}
                                 onBlur={() => this.onChange()}
                             />
                         ))}
@@ -204,7 +212,6 @@ const mapStateToProps = (state) => {
             selectedData = secretList[selItemIdx];
         }
     }
-
     return {
         activeMode: state.secrets.activeMode,
         selectedData: selectedData,

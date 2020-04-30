@@ -18,3 +18,4 @@ export function binarySearch(items, value) {
     //make sure it's the right value
     return items[middle].value !== value ? -1 : middle;
 }
+

@@ -3,8 +3,8 @@ import { InputTypes } from '../com/const';
 
 export const SecretItem = () => ({
     id: uuid.v4(),
-    label: null,
-    value: null,
+    label: "",
+    value: "",
     type: InputTypes.TEXT,    
 })
 
