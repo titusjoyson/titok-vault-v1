@@ -11,7 +11,7 @@ function SearchField(props) {
     return (
         <Row justify="space-between" align="middle" className="full-width secret-search-row border-1">
             <Col align={"center"} flex={1}>
-                <Input placeholder="All Secrets" className="full-width"/>
+                <Input placeholder="All Secrets" className="full-width" onChange={(event)=>props.onChange(event.target.value)}/>
             </Col>
             <Col align={"center"}>
                 <Tooltip title="Add Secret" className="secret-search-field-button">

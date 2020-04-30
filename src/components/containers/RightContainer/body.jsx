@@ -43,7 +43,6 @@ class RightContainerInner extends React.Component {
     formRef = React.createRef();
 
     static getDerivedStateFromProps(props, state) {
-        console.log("main: getDerivedStateFromProps");
         if (props.selectedData) {
             if (!props.selectedData.id){
                 // clean right container state
@@ -60,7 +59,6 @@ class RightContainerInner extends React.Component {
                 };
             }
         }
-        console.log("main: getDerivedStateFromProps:end");
         // Return null if the state hasn't changed
         return null;
     }
