@@ -13,6 +13,7 @@ import { defaultTheme } from "../../../theme/const";
 import { addSecret, selectSecret } from "../../../redux/actions/secrets";
 
 import { binarySearch } from "../../../utils/search";
+import { timerFunction } from "../../../utils/timer";
 
 const { Sider } = Layout;
 const theme = defaultTheme;
@@ -47,13 +48,10 @@ class LeftContainer extends React.Component {
 
     typingTimeout = null;
     onSearch = (value) => {
-        clearTimeout(this.typingTimeout);
-
-        // Make a new timeout set to go off in 1000ms (1 second)
-        this.typingTimeout = setTimeout(() => {
+        timerFunction(this.typingTimeout, ()=>{
             let result = this.doSearch(this.props.secretList, value);
             this.setState({ items: result });
-        }, 500);
+        })
     };
 
     render() {

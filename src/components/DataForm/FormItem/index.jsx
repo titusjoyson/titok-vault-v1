@@ -9,21 +9,13 @@ import SwitchInput from "../Input/switch";
 
 import DraggableWrapper from "../../DND/Draggable";
 import { InputTypes } from "../../../com/const";
+import { copyToClipboard } from "../../../utils/com";
 
 import "../styles.less";
 import "./styles.less";
 
-function copyToClipboard(str) {
-    const el = document.createElement("textarea");
-    el.value = str;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-}
-
 function FormItem(props) {
-    const { data, itemIndex, onDelete, onBlur, readOnly } = props;
+    const { data, itemIndex, onDelete, onChange, readOnly } = props;
     const rowNumber = itemIndex + 1;
 
     const [valueType, setValueType] = useState(data.type);
@@ -46,7 +38,7 @@ function FormItem(props) {
                             className="form-item-label-input-item"
                             inputClassName="form-item-label-input"
                             defaultValue={data.label}
-                            onBlur={() => onBlur()}
+                            onChange={(value) => onChange(value, "label")}
                         />
                         <Row justify={"start"} align={"middle"}>
                             <Col flex={1}>
@@ -59,7 +51,9 @@ function FormItem(props) {
                                     className="form-item-secret-input-item"
                                     inputClassName="form-item-secret-input"
                                     defaultValue={data.value}
-                                    onBlur={() => onBlur()}
+                                    onChange={(value) =>
+                                        onChange(value, "value")
+                                    }
                                 />
                             </Col>
                             {!readOnly ? (
@@ -67,12 +61,11 @@ function FormItem(props) {
                                     name={`${data.id}-type`}
                                     defaultValue={data.type}
                                     onChange={(value) => {
-                                        setValueType(
-                                            value
-                                                ? InputTypes.PASSWORD
-                                                : InputTypes.TEXT
-                                        );
-                                        onBlur();
+                                        const type = value
+                                            ? InputTypes.PASSWORD
+                                            : InputTypes.TEXT;
+                                        setValueType(type);
+                                        onChange(type, "type");
                                     }}
                                 />
                             ) : null}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Input } from "antd";
 
 function TextInput(props) {
@@ -12,8 +12,18 @@ function TextInput(props) {
         inputClassName,
         readOnly
     } = props;
-    const { defaultValue, onBlur } = props;
+    const { defaultValue, onChange } = props;
 
+    let typingTimeout = null;
+    function onValueChange(value){
+        clearTimeout(typingTimeout);
+
+        // Make a new timeout set to go off in 1000ms (1 second)
+        typingTimeout = setTimeout(() => {
+            onChange(value)
+        }, 500);
+    }
+    
     var FormInput = Input;
     if (type === "password") {
         FormInput = Input.Password;
@@ -36,7 +46,7 @@ function TextInput(props) {
                 className={inputClassName}
                 autoComplete={"new-password"}
                 defaultValue={defaultValue}
-                onBlur={()=>onBlur()}
+                onChange={(e)=>onValueChange(e.target.value)}
                 size={props.size || "middle"}
                 readOnly={readOnly}
             />

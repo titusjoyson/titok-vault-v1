@@ -44,9 +44,9 @@ class RightContainerInner extends React.Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.selectedData) {
-            if (!props.selectedData.id){
+            if (!props.selectedData.id) {
                 // clean right container state
-                return Secret("")
+                return Secret("");
             }
             if (state.id !== props.selectedData.id) {
                 let newData = { ...props.selectedData };
@@ -63,78 +63,57 @@ class RightContainerInner extends React.Component {
         return null;
     }
 
-    preserveState = () => {
-        const previousData = this.getValues();
-        if (previousData) {
-            this.props.actions.replaceSecret(previousData);
-        }
-    };
-
     onDragEnd = (result) => {
-        const data = this.state.items;
+        const data = this.state;
         // dropped outside the list
         if (!result.destination) {
             return;
         }
         const items = reorder(
-            data,
+            data.items,
             result.source.index,
             result.destination.index
         );
+
+        data.items = items;
+        this.props.actions.replaceSecret(data);
         this.setState({ items: items });
     };
 
-    getValues = () => {
-        let data = { ...this.state };
-        const form = this.formRef.current;
-        if (data.id) {
-            data.title = form.getFieldValue(`${data.id}-title`);
-            for (let i = 0; i < data.items.length; i++) {
-                let item = data.items[i];
-                item.label = form.getFieldValue(`${item.id}-label`);
-                item.value = form.getFieldValue(`${item.id}-secret`);
-                let type = form.getFieldValue(`${item.id}-type`);
-                if (!type) {
-                    item.type = InputTypes.PASSWORD;
-                }else{
-                    item.type = InputTypes.TEXT;
-                }
-                data.items[i] = item;
-            }
-            return data;
-        }
-    };
-
     deleteItem = (id) => {
-        let newItems = [...this.state.items];
+        let data = { ...this.state };
+        let newItems = [...data.items];
         const deleteItemIdx = newItems.findIndex((i) => i.id === id);
         newItems.splice(deleteItemIdx, 1);
-        this.setState({ items: newItems }, () => {
-            this.preserveState();
-        });
+        
+        data.items = newItems;
+        this.props.actions.replaceSecret(data);
+        this.setState({ items: newItems });
     };
 
     addItem = () => {
-        let newItems = [...this.state.items, SecretItem()];
-        this.setState({ items: newItems }, () => {
-            this.preserveState();
-        });
+        let data = { ...this.state };
+        data.items = [...data.items, SecretItem()];
+        this.props.actions.replaceSecret(data);  
+        this.setState({ items: data.items });
     };
 
-    onChange = () => {
-        const { activeMode } = this.props;
-        const readOnly = activeMode === ViewModes.VIEW;
-        if (!readOnly) {
-            window.setTimeout(() => this.preserveState(), 100);
+    onChange = (value, field, idx=null) => {
+        let data = { ...this.state };
+        if (field === "title") {
+            data.title = value;
+        } else {
+            data.items[idx][field] = value;
         }
+        this.props.actions.replaceSecret(data);
     };
 
     _renderAddButton = (readOnly) => {
-        if (readOnly){
-            return null
+        if (readOnly) {
+            return null;
         }
         return (
-            <Affix style={{ textAlign: "right", right: 32 }} offsetBottom={44}>
+            <div className="right-container-add-icon-wrap">
                 <Button
                     className="right-container-add-icon"
                     type="primary"
@@ -144,7 +123,7 @@ class RightContainerInner extends React.Component {
                     size={"large"}
                     onClick={() => this.addItem()}
                 ></Button>
-            </Affix>
+            </div>
         );
     };
 
@@ -155,7 +134,7 @@ class RightContainerInner extends React.Component {
             return null;
         }
         const readOnly = activeMode === ViewModes.VIEW;
-        let titleIC = "form-item-underline"
+        let titleIC = "form-item-underline";
         return (
             <React.Fragment>
                 <Form
@@ -172,7 +151,7 @@ class RightContainerInner extends React.Component {
                         className="form-item-underline-item"
                         placeholder="Title"
                         defaultValue={title}
-                        onBlur={() => this.onChange()}
+                        onChange={(value) => this.onChange(value, "title")}
                     />
                     <DropableView
                         onDragEnd={(results) => this.onDragEnd(results)}
@@ -184,7 +163,9 @@ class RightContainerInner extends React.Component {
                                 data={d}
                                 itemIndex={idx}
                                 onDelete={(did) => this.deleteItem(did)}
-                                onBlur={() => this.onChange()}
+                                onChange={(value, field) =>
+                                    this.onChange(value, field, idx)
+                                }
                             />
                         ))}
                     </DropableView>
