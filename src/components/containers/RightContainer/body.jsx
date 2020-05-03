@@ -64,7 +64,7 @@ class RightContainerInner extends React.Component {
     }
 
     onDragEnd = (result) => {
-        const data = this.state;
+        const data = this.props.selectedData;
         // dropped outside the list
         if (!result.destination) {
             return;
@@ -81,7 +81,7 @@ class RightContainerInner extends React.Component {
     };
 
     deleteItem = (id) => {
-        let data = { ...this.state };
+        let data = { ...this.props.selectedData };
         let newItems = [...data.items];
         const deleteItemIdx = newItems.findIndex((i) => i.id === id);
         newItems.splice(deleteItemIdx, 1);
@@ -92,14 +92,14 @@ class RightContainerInner extends React.Component {
     };
 
     addItem = () => {
-        let data = { ...this.state };
+        let data = { ...this.props.selectedData };
         data.items = [...data.items, SecretItem()];
         this.props.actions.replaceSecret(data);  
         this.setState({ items: data.items });
     };
 
     onChange = (value, field, idx=null) => {
-        let data = { ...this.state };
+        let data = { ...this.props.selectedData };
         if (field === "title") {
             data.title = value;
         } else {

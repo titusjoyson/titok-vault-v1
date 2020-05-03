@@ -1,6 +1,11 @@
 {
   "name": "titok-vault",
   "version": "0.1.0",
+  "author": {
+    "name": "Titus Joyson",
+    "email": "tj.joyson@gmail.com",
+    "url": "https://titusjoyson.github.io/"
+  },
   "private": true,
   "main": "src/start.js",
   "dependencies": {
@@ -11,8 +16,6 @@
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^7.0.2",
     "customize-cra": "^0.9.1",
-    "electron": "^8.2.0",
-    "electron-is-dev": "^1.1.0",
     "googleapis": "^49.0.0",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
@@ -33,22 +36,27 @@
     "electron": "cross-env NODE_ENV=dev nodemon --exec \"\"electron .\"\"",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postinstall": "electron-builder install-app-deps",
+    "electron-pack": "electron-builder build"
   },
   "build": {
     "appId": "org.titusjoyson.titokvault",
-    "win": {
-      "category": "office",
-      "iconUrl": "./public/logo.png"
+    "productName": "Titok Vault",
+    "copyright": "Copyright © 2020 ${author}",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
     },
+    "win": {},
     "linux": {
       "category": "office",
-      "iconUrl": "./public/logo.png"
+      "target": ["deb"]
     },
-    "mac": {
-      "category": "office",
-      "iconUrl": "./public/logo.png"
-    }
+    "mac": {}
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -66,6 +74,8 @@
     ]
   },
   "devDependencies": {
+    "electron": "^8.2.0",
+    "electron-is-dev": "^1.1.0",
     "electron-builder": "^22.4.1",
     "electron-reload": "^1.5.0",
     "nodemon": "^2.0.2"
