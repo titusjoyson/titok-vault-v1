@@ -13,6 +13,7 @@
     "customize-cra": "^0.9.1",
     "electron": "^8.2.0",
     "electron-is-dev": "^1.1.0",
+    "googleapis": "^49.0.0",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "react": "^16.13.1",
@@ -21,6 +22,7 @@
     "react-dom": "^16.13.1",
     "react-infinite-scroller": "^1.2.4",
     "react-redux": "^7.2.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
@@ -36,16 +38,16 @@
   "build": {
     "appId": "org.titusjoyson.titokvault",
     "win": {
-      "category": "your.app.category.type",
-      "iconUrl": "path-to-icon.png"
+      "category": "office",
+      "iconUrl": "./public/logo.png"
     },
     "linux": {
-      "category": "your.app.category.type",
-      "iconUrl": "path-to-icon.png"
+      "category": "office",
+      "iconUrl": "./public/logo.png"
     },
     "mac": {
-      "category": "your.app.category.type",
-      "iconUrl": "path-to-icon.png"
+      "category": "office",
+      "iconUrl": "./public/logo.png"
     }
   },
   "eslintConfig": {

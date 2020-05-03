@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -12,7 +12,6 @@ import "./styles.css";
 import { defaultTheme } from "../../../theme/const";
 import { addSecret, selectSecret } from "../../../redux/actions/secrets";
 
-import { binarySearch } from "../../../utils/search";
 import { timerFunction } from "../../../utils/timer";
 
 const { Sider } = Layout;

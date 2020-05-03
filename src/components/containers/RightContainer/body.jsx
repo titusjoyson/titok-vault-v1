@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { Form, Button, Affix } from "antd";
+import { Form, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
 import FormItem from "../../DataForm/FormItem";
@@ -14,7 +14,7 @@ import {
     changeViewMode,
     replaceSecret,
 } from "../../../redux/actions/secrets";
-import { ViewModes, InputTypes } from "../../../com/const";
+import { ViewModes } from "../../../com/const";
 import Secret, { SecretItem } from "../../../models/secret";
 
 import "./styles.less";

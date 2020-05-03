@@ -10,7 +10,7 @@ let mainWindow
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 900,
-        height: 700,
+        height: 600,
         webPreferences: {
             nodeIntegration: true,
         },
@@ -25,6 +25,8 @@ function createWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
+
+    mainWindow.setTitle("Titok Vault")
 }
 
 app.allowRendererProcessReuse = true;
