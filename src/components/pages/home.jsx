@@ -1,18 +1,16 @@
 import React from "react";
 import { Layout } from "antd";
-import LeftContainer from '../containers/LeftContainer';
-import RightContainer from '../containers/RightContainer';
-import SearchField from '../fields/SearchField';
-import ScrollContainer from '../containers/ScrollContainer';
+
+import LeftContainer from "../containers/LeftContainer";
+import RightContainer from "../containers/RightContainer";
+
 
 function Home() {
+
     return (
         <Layout>
-            <LeftContainer
-                Header={SearchField}
-                Body={ScrollContainer}
-            />
-            <RightContainer/>
+            <LeftContainer/>
+            <RightContainer />
         </Layout>
     );
 }
