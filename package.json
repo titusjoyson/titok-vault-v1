@@ -54,15 +54,18 @@
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "public"
     },
     "win": {},
     "linux": {
+      "icon": "./build/icons",
       "category": "office",
       "target": [
         "deb"
       ],
-      "icon": "./public/icons/256x256.png"
+      "desktop": {
+        "Encoding": "UTF-8"
+      }
     },
     "mac": {}
   },
