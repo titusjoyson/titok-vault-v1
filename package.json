@@ -16,6 +16,9 @@
     "babel-plugin-import": "^1.13.0",
     "cross-env": "^7.0.2",
     "customize-cra": "^0.9.1",
+    "electron-is-dev": "^1.1.0",
+    "electron-reload": "^1.5.0",
+    "electron-serve": "^1.0.0",
     "googleapis": "^49.0.0",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
@@ -32,13 +35,15 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "cross-env BROWSER=none react-app-rewired start",
+    "react-start": "cross-env BROWSER=none react-app-rewired start",
+    "react-build": "react-app-rewired build",
+    "react-test": "react-app-rewired test",
+    "react-eject": "react-scripts eject",
     "electron": "cross-env NODE_ENV=dev nodemon --exec \"\"electron .\"\"",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "postinstall": "electron-builder install-app-deps",
-    "electron-pack": "electron-builder build"
+    "electron-check": "electron-builder install-app-deps",
+    "electron-build": "electron-builder",
+    "release": "npm run react-build && electron-builder --publish=always",
+    "build": "react-build && electron-build"
   },
   "build": {
     "appId": "org.titusjoyson.titokvault",
@@ -54,10 +59,14 @@
     "win": {},
     "linux": {
       "category": "office",
-      "target": ["deb"]
+      "target": [
+        "deb"
+      ],
+      "icon": "./public/icons/256x256.png"
     },
     "mac": {}
   },
+  "homepage": "./",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -75,9 +84,7 @@
   },
   "devDependencies": {
     "electron": "^8.2.0",
-    "electron-is-dev": "^1.1.0",
     "electron-builder": "^22.4.1",
-    "electron-reload": "^1.5.0",
     "nodemon": "^2.0.2"
   }
 }

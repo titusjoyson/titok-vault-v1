@@ -1,12 +1,14 @@
-const electron = require('electron')
-const app = electron.app
-const path = require('path')
-const isDev = require('electron-is-dev')
-require('electron-reload')
-const BrowserWindow = electron.BrowserWindow
+const electron = require("electron");
+const app = electron.app;
+let isDev = require("electron-is-dev");
+const path = require("path");
+const url = require("url");
+require("electron-reload");
 
-let mainWindow
+const BrowserWindow = electron.BrowserWindow;
 
+let mainWindow;
+isDev = false;
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 900,
@@ -14,33 +16,39 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
         },
-    })
+    });
 
-    mainWindow.loadURL(
-        isDev
-            ? 'http://localhost:3000'
-            : `file://${path.join(__dirname, '../build/index.html')}`,
-    )
+    // and load the index.html of the app.
+    const startUrl = isDev
+        ? "http://localhost:3000"
+        : url.format({
+              pathname: path.join(__dirname, "/../build/index.html"),
+              protocol: "file:",
+              slashes: true,
+          });
 
-    mainWindow.on('closed', () => {
-        mainWindow = null
-    })
+    mainWindow.loadURL(startUrl);
 
-    mainWindow.setTitle("Titok Vault")
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
+
+    mainWindow.on("closed", () => {
+        mainWindow = null;
+    });
 }
 
 app.allowRendererProcessReuse = true;
 
-app.on('ready', createWindow)
+app.on("ready", createWindow);
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
+        app.quit();
     }
-})
+});
 
-app.on('activate', () => {
+app.on("activate", () => {
     if (mainWindow === null) {
-        createWindow()
+        createWindow();
     }
-})
+});
